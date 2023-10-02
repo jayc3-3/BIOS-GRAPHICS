@@ -1,6 +1,6 @@
 ;
 ; BIOS-GRAPHICS
-; Simple 'Operating System' that just lets you move a cube on a screen.
+; Simple OS that just lets you move a cube on a screen.
 ;
 ; https://github.com/jayc3-3/BIOS-GRAPHICS
 ; Free for use and/or modification

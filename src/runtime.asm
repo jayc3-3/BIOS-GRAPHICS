@@ -1,6 +1,6 @@
 ;
 ; BIOS-GRAPHICS
-; Simple 'Operating System' that just lets you move a cube on a screen.
+; Simple OS that just lets you move a cube on a screen.
 ;
 ; https://github.com/jayc3-3/BIOS-GRAPHICS
 ; Free for use and/or modification
@@ -48,7 +48,7 @@ je .no_keypress
 cmp al, 18
 je reboot
 
-cmp al, 13
+cmp ah, 0x1C
 je graphics_begin
 
 .no_keypress:
@@ -81,7 +81,6 @@ mov dl, 50
 call graphics_rect
 
 call graphics_swap
-
 jmp graphics_loop
 
 .cube_x: dw 0
@@ -90,21 +89,17 @@ jmp graphics_loop
 reboot:
 jmp 0xFFFF:0
 
-times 4096 - ($ - runtime) db 0
+runtime_message: db "Started BIOS-GRAPHICS rev. 002", 0
+reboot_notice:   db "Press 'CTRL+R' to reboot at any time", 0
+owner_message:   db "BIOS-GRAPHICS made by JayC3-3", 0
+github_message:  db "https://github.com/jayc3-3/BIOS-GRAPHICS", 0
+date_message:    db "Software dated Oct. 01, 2023", 0
+start_message:   db "Press 'Enter' to start", 0
+control_message: db "Use the 'WASD' keys to control the cube", 0
 
-data:
-
-runtime_message:  db "Started BIOS-GRAPHICS runtime rev. 001", 0
-reboot_notice:    db "Press CTRL+R to reboot at any time", 0
-owner_message:    db "BIOS-GRAPHICS made by JayC3-3", 0
-github_message:   db "https://github.com/jayc3-3/BIOS-GRAPHICS", 0
-date_message:     db "Software dated Oct. 01, 2023", 0
-start_message:    db "Press 'Enter' to start", 0
-control_message:  db "Use the 'WASD' keys to control the cube", 0
-
-times 4096 - ($ - data) db 0
-
-functions:
+%include "src/console.asm"
+%include "src/graphics.asm"
+%include "src/keyboard.asm"
 
 process_input: ; Input: AH = INT 16h scancode; No output
 push bx
@@ -186,8 +181,4 @@ mov word[graphics_loop.cube_x], bx
 
 jmp .done
 
-%include "src/console.asm"
-%include "src/graphics.asm"
-%include "src/keyboard.asm"
-
-times 8192 - ($ - functions) db 0
+times 16384 - ($ - runtime) db 0
